@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Theme from "./Theme";
 import Nav from "@/components/layout/Nav";
 import "./globals.css";
 
@@ -19,10 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
-        <Nav />
-        {children}
+        <Theme>
+          <Nav />
+          {children}
+        </Theme>
       </body>
     </html>
   );
