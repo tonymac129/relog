@@ -13,7 +13,7 @@ function Nav() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="w-full px-70 flex items-center justify-between gap-x-5 border-b-2 border-b-gray-700 py-2 sticky top-0">
+    <nav className="z-10 bg-gray-200 dark:bg-gray-950 w-full px-70 flex items-center justify-between gap-x-5 border-b-2 border-b-gray-700 py-2 sticky top-0">
       <div>
         <Link href="/" className="flex items-center font-bold text-xl gap-x-3">
           <Image src="/logo.png" alt="Relog logo" width={45} height={45} /> Relog
