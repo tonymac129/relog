@@ -2,7 +2,7 @@
 
 import type { ActivityType, DayType } from "@/types/Logs";
 import { FiLogIn, FiPlus, FiUser } from "react-icons/fi";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, FormEvent, useRef } from "react";
 import Button from "@/components/ui/Button";
 import Manage from "./Manage";
 import Logs from "./Logs";
@@ -13,21 +13,10 @@ const inputStyles = "rounded bg-gray-300 dark:bg-gray-900 outline-none py-2 px-4
 export default function Page() {
   const [guestMode, setGuestMode] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const [logs, setLogs] = useState<DayType[]>([
-    {
-      id: "saldkfj",
-      date: new Date(),
-      activities: [{ id: "asdf", title: "test activity 1", description: "description 1", date: new Date() }],
-    },
-    {
-      id: "asdf",
-      date: new Date("1/25/26"),
-      activities: [{ id: "sadf", title: "test activity 2", description: "description 2", date: new Date() }],
-    },
-  ]);
+  const [logs, setLogs] = useState<DayType[]>([]);
   const [logModalOpen, setLogModalOpen] = useState<boolean>(false);
   const [newActivity, setNewActivity] = useState<ActivityType>({
-    id: crypto.randomUUID(),
+    id: "",
     title: "",
     description: "",
     date: new Date(),
@@ -40,8 +29,10 @@ export default function Page() {
           activity.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
         ),
       }))
-      .filter((log) => log.activities.length > 0);
+      .filter((log) => log.activities.length > 0)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [logs, search]);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setGuestMode(() => {
@@ -50,21 +41,36 @@ export default function Page() {
       }
       return false;
     });
+    setLogs(() => {
+      if (typeof window !== "undefined") {
+        return JSON.parse(localStorage.getItem("relog-logs")!) || [];
+      }
+      return [];
+      //TODO: add backend logic
+    });
   }, []);
 
   useEffect(() => {
     if (logModalOpen) {
       document.body.classList.add("modal-open");
+      titleInputRef.current?.focus();
+      setNewActivity({
+        id: crypto.randomUUID(),
+        title: "",
+        description: "",
+        date: new Date(),
+      });
     } else {
       document.body.classList.remove("modal-open");
     }
-    setNewActivity({
-      id: crypto.randomUUID(),
-      title: "",
-      description: "",
-      date: new Date(),
-    });
   }, [logModalOpen]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && guestMode && logs.length > 0) {
+      localStorage.setItem("relog-logs", JSON.stringify(logs));
+    }
+    //TODO: implement backend data storage
+  }, [logs, guestMode]);
 
   function handleAddLog() {
     setLogModalOpen(true);
@@ -81,11 +87,25 @@ export default function Page() {
     }
   }
 
-  function handleLog() {
-    const newLogs = [...logs];
-    newLogs[1].activities.push(newActivity);
-    setLogs(newLogs);
-    setLogModalOpen(false);
+  function handleLog(e: FormEvent) {
+    e.preventDefault();
+    if (newActivity.title.trim().length > 0) {
+      const newLogs = [...logs];
+      const existingDate = newLogs.findIndex(
+        (day) => new Date(day.date).toLocaleDateString() === newActivity.date.toLocaleDateString(),
+      );
+      if (existingDate !== -1) {
+        newLogs[existingDate].activities.push(newActivity);
+      } else {
+        newLogs.push({
+          id: crypto.randomUUID(),
+          date: newActivity.date,
+          activities: [newActivity],
+        });
+      }
+      setLogs(newLogs);
+      setLogModalOpen(false);
+    }
   }
 
   return (
@@ -101,7 +121,7 @@ export default function Page() {
           <Logs days={displayedLogs} />
           {logModalOpen && (
             <Modal close={() => setLogModalOpen(false)}>
-              <div className="flex flex-col gap-y-5">
+              <form className="flex flex-col gap-y-5" onSubmit={(e) => handleLog(e)}>
                 <h2 className="text-center text-black dark:text-white font-bold text-2xl">Log Activity</h2>
                 <input
                   type="text"
@@ -109,12 +129,18 @@ export default function Page() {
                   value={newActivity.title}
                   onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
                   className={inputStyles}
+                  ref={titleInputRef}
                 />
                 <input
                   type="date"
-                  value={`${newActivity.date.getFullYear()}-${newActivity.date.getMonth()}-${newActivity.date.getDate()}`}
-                  onChange={(e) => setNewActivity({ ...newActivity, date: new Date(e.target.value) })}
+                  value={newActivity.date.toISOString().split("T")[0]}
+                  onChange={(e) => {
+                    const outputDate = new Date(e.target.value);
+                    outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
+                    setNewActivity({ ...newActivity, date: outputDate });
+                  }}
                   className={inputStyles}
+                  tabIndex={-1}
                 />
                 <input
                   type="text"
@@ -123,10 +149,10 @@ export default function Page() {
                   onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
                   className={inputStyles}
                 />
-                <Button primary={true} onclick={handleLog}>
+                <Button primary={true} submit={true}>
                   Add activity
                 </Button>
-              </div>
+              </form>
             </Modal>
           )}
           {/*TODO: add animation for modal*/}
