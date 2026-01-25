@@ -15,6 +15,7 @@ export default function Page() {
   const [search, setSearch] = useState<string>("");
   const [logs, setLogs] = useState<DayType[]>([]);
   const [logModalOpen, setLogModalOpen] = useState<boolean>(false);
+  const [filtering, setFiltering] = useState<boolean>(false);
   const [newActivity, setNewActivity] = useState<ActivityType>({
     id: "",
     title: "",
@@ -25,13 +26,17 @@ export default function Page() {
     return logs
       .map((log) => ({
         ...log,
-        activities: log.activities.filter((activity) =>
-          activity.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
-        ),
+        activities: log.activities.filter((activity) => {
+          if (filtering) {
+            return activity.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()) && activity.starred;
+          } else {
+            return activity.title.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase());
+          }
+        }),
       }))
       .filter((log) => log.activities.length > 0)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [logs, search]);
+  }, [logs, search, filtering]);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -117,8 +122,8 @@ export default function Page() {
               <FiPlus size={25} /> Add log
             </Button>
           </div>
-          <Manage search={search} setSearch={setSearch} />
-          <Logs days={displayedLogs} />
+          <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} />
+          <Logs days={displayedLogs} setLogs={setLogs} />
           {logModalOpen && (
             <Modal close={() => setLogModalOpen(false)}>
               <form className="flex flex-col gap-y-5" onSubmit={(e) => handleLog(e)}>
@@ -133,7 +138,11 @@ export default function Page() {
                 />
                 <input
                   type="date"
-                  value={newActivity.date.toISOString().split("T")[0]}
+                  value={
+                    new Date(newActivity.date.getTime() - newActivity.date.getTimezoneOffset() * 60000)
+                      .toISOString()
+                      .split("T")[0]
+                  }
                   onChange={(e) => {
                     const outputDate = new Date(e.target.value);
                     outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);

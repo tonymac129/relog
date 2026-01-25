@@ -6,14 +6,18 @@ const componentStyles = "bg-gray-300 dark:bg-gray-900 text-lg text-black dark:te
 type ManageProps = {
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  setFiltering: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function Manage({ search, setSearch }: ManageProps) {
+function Manage({ search, setSearch, setFiltering }: ManageProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const filterDropdownRef = useRef<HTMLSelectElement>(null);
 
   function handleClearSearch() {
     setSearch("");
+    setFiltering(false);
     inputRef.current?.focus();
+    filterDropdownRef.current!.value = "all";
   }
 
   return (
@@ -32,16 +36,13 @@ function Manage({ search, setSearch }: ManageProps) {
         )}
       </div>
       <div className="w-full flex gap-x-5">
-        <label className="flex-1 flex flex-col gap-y-1">
-          Sort by
-          <select className={`${componentStyles} cursor-pointer appearance-none text-center py-2 font-bold`}>
-            <option value="date">Date</option>
-            <option value="name">Name</option>
-          </select>
-        </label>
-        <label className="flex-1 flex flex-col gap-y-1">
+        <label className="w-30 flex flex-col gap-y-1">
           Filter by
-          <select className={`${componentStyles} cursor-pointer appearance-none text-center py-2 font-bold`}>
+          <select
+            className={`${componentStyles} cursor-pointer appearance-none text-center py-2 font-bold`}
+            ref={filterDropdownRef}
+            onChange={() => setFiltering(filterDropdownRef.current?.value === "starred")}
+          >
             <option value="all">All</option>
             <option value="starred">Starred</option>
           </select>
