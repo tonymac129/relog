@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import Manage from "./Manage";
 import Logs from "./Logs";
 import Modal from "@/components/ui/Modal";
+import SignInBtn from "@/components/ui/SignInBtn";
 
 const inputStyles = "rounded bg-gray-300 dark:bg-gray-900 outline-none py-2 px-4 text-lg";
 
@@ -162,10 +163,8 @@ export default function Page() {
           {/*TODO: add animation for modal*/}
         </div>
       ) : (
-        <div className="flex gap-x-5 justify-center">
-          <Button primary={true} onclick={handleSignIn}>
-            <FiLogIn size={25} /> Sign in
-          </Button>
+        <div className="flex gap-x-5 justify-center py-10">
+          <SignInBtn />
           <Button onclick={handleGuest}>
             <FiUser size={25} /> Guest mode
           </Button>

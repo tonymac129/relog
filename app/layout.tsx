@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Theme from "./Theme";
 import Nav from "@/components/layout/Nav";
+import User from "@/components/ui/User";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <Theme>
-          <Nav />
+          <Nav>
+            <User />
+          </Nav>
           {children}
         </Theme>
       </body>
