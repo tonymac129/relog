@@ -14,7 +14,7 @@ function Button({ children, primary, onclick, submit }: ButtonProps) {
       onClick={onclick}
       className={`${primary ? "bg-amber-800 hover:bg-amber-700 text-white" : "bg-transparent text-black dark:text-white"} 
       border-2 border-amber-800 hover:border-amber-700  px-5 py-2 cursor-pointer rounded-full text-lg font-bold flex
-        items-center gap-x-2 justify-center ${submit ? "flex-1" : ""}`}
+        items-center gap-x-4 justify-center ${submit ? "flex-1" : ""}`}
     >
       {children}
     </button>

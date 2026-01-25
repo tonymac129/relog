@@ -1,7 +1,7 @@
 "use client";
 
 import type { ActivityType, DayType } from "@/types/Logs";
-import { FiLogIn, FiPlus, FiUser } from "react-icons/fi";
+import { FiLogIn, FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, FormEvent, useRef } from "react";
 import Button from "@/components/ui/Button";
 import Manage from "./Manage";
@@ -117,12 +117,7 @@ export default function Page() {
     <div className="w-full px-70 flex justify-center relative">
       {guestMode ? (
         <div className="w-[65%]  flex flex-col items-center">
-          <div className="absolute right-70 top-10">
-            <Button primary={true} onclick={handleAddLog}>
-              <FiPlus size={25} /> Add log
-            </Button>
-          </div>
-          <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} />
+          <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
           <Logs days={displayedLogs} setLogs={setLogs} />
           {logModalOpen && (
             <Modal close={() => setLogModalOpen(false)}>

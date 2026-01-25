@@ -2,7 +2,9 @@
 
 import { MdDarkMode, MdLightMode, MdSettings } from "react-icons/md";
 import { FiLogIn, FiGithub } from "react-icons/fi";
+import { useState } from "react";
 import { useTheme } from "next-themes";
+import SignInModal from "../ui/SignInModal";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -10,6 +12,7 @@ const navBtnStyles =
   "cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800 rounded-full flex items-center px-3 py-2 gap-x-3 font-bold";
 
 function Nav() {
+  const [signInModalOpen, setSignInModalOpen] = useState<boolean>(false);
   const { theme, setTheme } = useTheme();
 
   return (
@@ -29,10 +32,11 @@ function Nav() {
         <div className={navBtnStyles}>
           <MdSettings size={20} /> Settings
         </div>
-        <div className={navBtnStyles}>
+        <div className={navBtnStyles} onClick={() => setSignInModalOpen(true)}>
           <FiLogIn size={20} /> Sign in
         </div>
       </div>
+      {signInModalOpen && <SignInModal close={() => setSignInModalOpen(false)} />}
     </nav>
   );
 }
