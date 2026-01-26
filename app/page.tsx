@@ -1,8 +1,10 @@
 "use client";
 
 import type { ActivityType, DayType } from "@/types/Logs";
-import { FiLogIn, FiUser } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, FormEvent, useRef } from "react";
+import { useSession } from "next-auth/react";
+import { getUserLogs, updateUserLogs } from "./actions";
 import Button from "@/components/ui/Button";
 import Manage from "./Manage";
 import Logs from "./Logs";
@@ -17,6 +19,7 @@ export default function Page() {
   const [logs, setLogs] = useState<DayType[]>([]);
   const [logModalOpen, setLogModalOpen] = useState<boolean>(false);
   const [filtering, setFiltering] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [newActivity, setNewActivity] = useState<ActivityType>({
     id: "",
     title: "",
@@ -39,6 +42,7 @@ export default function Page() {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [logs, search, filtering]);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const { data: session } = useSession();
 
   useEffect(() => {
     setGuestMode(() => {
@@ -52,9 +56,21 @@ export default function Page() {
         return JSON.parse(localStorage.getItem("relog-logs")!) || [];
       }
       return [];
-      //TODO: add backend logic
     });
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      async function fetchLogs() {
+        const logs = await getUserLogs(session!.user!.email!);
+        setLogs(logs);
+      }
+
+      fetchLogs();
+    }
+    setLoading(false);
+  }, [session]);
 
   useEffect(() => {
     if (logModalOpen) {
@@ -72,18 +88,15 @@ export default function Page() {
   }, [logModalOpen]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && guestMode && logs.length > 0) {
+    if (session?.user?.email) {
+      updateUserLogs(session.user.email, logs);
+    } else if (typeof window !== "undefined" && guestMode && logs.length > 0) {
       localStorage.setItem("relog-logs", JSON.stringify(logs));
     }
-    //TODO: implement backend data storage
-  }, [logs, guestMode]);
+  }, [logs, guestMode, session]);
 
   function handleAddLog() {
     setLogModalOpen(true);
-  }
-
-  function handleSignIn() {
-    console.log("Signed in");
   }
 
   function handleGuest() {
@@ -116,7 +129,7 @@ export default function Page() {
 
   return (
     <div className="w-full px-70 flex justify-center relative">
-      {guestMode ? (
+      {guestMode || session?.user ? (
         <div className="w-[65%]  flex flex-col items-center">
           <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
           <Logs days={displayedLogs} setLogs={setLogs} />
@@ -162,6 +175,8 @@ export default function Page() {
           )}
           {/*TODO: add animation for modal*/}
         </div>
+      ) : loading ? (
+        <div className="py-10 text-lg">Loading...</div>
       ) : (
         <div className="flex gap-x-5 justify-center py-10">
           <SignInBtn />

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Session from "./Session";
 import Theme from "./Theme";
 import Nav from "@/components/layout/Nav";
 import User from "@/components/ui/User";
@@ -23,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
-        <Theme>
-          <Nav>
-            <User />
-          </Nav>
-          {children}
-        </Theme>
+        <Session>
+          <Theme>
+            <Nav>
+              <User />
+            </Nav>
+            {children}
+          </Theme>
+        </Session>
       </body>
     </html>
   );
