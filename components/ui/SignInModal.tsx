@@ -22,7 +22,7 @@ function SignInModal({ close }: { close: () => void }) {
   return (
     <Modal close={close}>
       <div className="flex flex-col gap-y-5 py-5">
-        <h2 className="text-center text-black dark:text-white font-bold text-2xl mb-5">Sign in to Relog</h2>
+        <h2 className="text-center text-black dark:text-white font-bold text-3xl mb-5">Sign in to Relog</h2>
         <Button primary={true} onclick={() => handleOAuthSignin("google")}>
           {loading === "google" ? (
             "Loading..."

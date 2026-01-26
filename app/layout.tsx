@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { deleteUserAccount } from "./actions";
 import Session from "./Session";
 import Theme from "./Theme";
 import Nav from "@/components/layout/Nav";
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
         <Session>
           <Theme>
-            <Nav>
+            <Nav deleteUserAccount={deleteUserAccount}>
               <User />
             </Nav>
             {children}

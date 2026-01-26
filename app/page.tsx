@@ -132,7 +132,7 @@ export default function Page() {
       {guestMode || session?.user ? (
         <div className="w-[65%]  flex flex-col items-center">
           <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
-          <Logs days={displayedLogs} setLogs={setLogs} />
+          <Logs displayed={displayedLogs} days={logs} setLogs={setLogs} />
           {logModalOpen && (
             <Modal close={() => setLogModalOpen(false)}>
               <form className="flex flex-col gap-y-5" onSubmit={(e) => handleLog(e)}>
