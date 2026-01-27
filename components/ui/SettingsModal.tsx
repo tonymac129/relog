@@ -43,9 +43,9 @@ function SettingsModal({ close, deleteUserAccount }: SettingsModalProps) {
 
   return (
     <Modal close={close}>
-      <div className="flex flex-col gap-y-5 py-5">
-        <h2 className="text-center text-black dark:text-white font-bold text-3xl mb-5">Settings</h2>
-        <div className="flex flex-col gap-y-3">
+      <div className="flex flex-col gap-y-2 sm:gap-y-5 py-2 sm:py-5">
+        <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl mb-0 sm:mb-3">Settings</h2>
+        <div className="flex flex-col gap-y-1 sm:gap-y-3">
           <h3 className="flex items-center gap-x-3 font-bold text-xl">
             <BsDatabase size={25} /> Data Control
           </h3>
@@ -53,8 +53,9 @@ function SettingsModal({ close, deleteUserAccount }: SettingsModalProps) {
             Export data
           </Button>
           <Button onclick={handleImport}>Import data</Button>
+          {/* TODO: add export and import from old daily log app */}
         </div>
-        <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col gap-y-1 sm:gap-y-3">
           <h3 className="flex items-center gap-x-3 font-bold text-xl">
             <MdAccountCircle size={25} /> Account
           </h3>
@@ -63,7 +64,7 @@ function SettingsModal({ close, deleteUserAccount }: SettingsModalProps) {
           </Button>
           <Button onclick={handleDelete}>Delete account</Button>
         </div>
-        <div className="text-gray-700 dark:text-gray-300 text-sm text-center mt-5">
+        <div className="text-gray-700 dark:text-gray-300 text-sm text-center mt-2 sm:mt-5">
           &copy; {new Date().getFullYear()}{" "}
           <a href="https://github.com/tonymac129" className="underline" target="_blank">
             Tony Macaroni

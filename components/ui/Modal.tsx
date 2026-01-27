@@ -24,7 +24,10 @@ function Modal({ children, close }: ModalProps) {
 
   return (
     <div className="w-screen h-screen fixed z-11 top-0 left-0 bg-gray-300/70 dark:bg-gray-900/70 backdrop-blur-sm flex justify-center items-center">
-      <div ref={modalRef} className="bg-gray-200 dark:bg-gray-950 rounded-lg py-5 px-8 w-100">
+      <div
+        ref={modalRef}
+        className="bg-gray-200 dark:bg-gray-950 rounded-lg py-5 px-4 sm:px-8 w-[75%] sm:w-100 max-h-[95%] overflow-auto"
+      >
         {children}
       </div>
     </div>

@@ -21,26 +21,30 @@ function Nav({ children, deleteUserAccount }: NavProps) {
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
 
   return (
-    <nav className="z-10 bg-gray-200 dark:bg-gray-950 w-full px-70 flex items-center justify-between gap-x-5 border-b-2 border-b-gray-700 py-2 sticky top-0">
-      <div>
+    <div className="w-full border-b-2 border-b-gray-700 flex justify-center sticky top-0 z-10">
+      <nav
+        className="z-10 bg-gray-200 dark:bg-gray-950 px-5 md:px-20 max-w-300 flex-1 flex items-center justify-between gap-x-5
+       py-2"
+      >
         <Link href="/" className="flex items-center font-bold text-xl gap-x-3">
-          <Image src="/logo.png" alt="Relog logo" width={45} height={45} /> Relog
+          <Image src="/logo.png" alt="Relog logo" width={45} height={45} /> <span className="hidden sm:inline">Relog</span>
         </Link>
-      </div>
-      <div className="flex gap-x-3">
-        <a href="https://github.com/tonymac129/relog" target="_blank" className={navBtnStyles}>
-          <FiGithub size={20} /> GitHub
-        </a>
-        <div className={navBtnStyles} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-          {theme === "light" ? <MdDarkMode size={20} /> : <MdLightMode size={20} />} Theme
+        <div className="flex gap-x-3">
+          <a href="https://github.com/tonymac129/relog" target="_blank" className={navBtnStyles}>
+            <FiGithub size={20} /> <span className="hidden sm:inline">GitHub</span>
+          </a>
+          <div className={navBtnStyles} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+            {theme === "light" ? <MdDarkMode size={20} /> : <MdLightMode size={20} />}{" "}
+            <span className="hidden sm:inline">Theme</span>
+          </div>
+          <div className={navBtnStyles} onClick={() => setSettingsModalOpen(true)}>
+            <MdSettings size={20} /> <span className="hidden sm:inline">Settings</span>
+          </div>
+          {children}
         </div>
-        <div className={navBtnStyles} onClick={() => setSettingsModalOpen(true)}>
-          <MdSettings size={20} /> Settings
-        </div>
-        {children}
-      </div>
-      {settingsModalOpen && <SettingsModal close={() => setSettingsModalOpen(false)} deleteUserAccount={deleteUserAccount} />}
-    </nav>
+        {settingsModalOpen && <SettingsModal close={() => setSettingsModalOpen(false)} deleteUserAccount={deleteUserAccount} />}
+      </nav>
+    </div>
   );
 }
 

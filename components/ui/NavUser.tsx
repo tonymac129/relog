@@ -26,16 +26,21 @@ function NavUser({ session }: { session: Session }) {
     };
   }, []);
 
+  function handleLogout() {
+    sessionStorage.clear();
+    signOut();
+  }
+
   if (!session.user) return null;
 
   return (
     <div className="relative" ref={navUserRef}>
       <div className={optionStyles} onClick={() => setMenuOpen(true)}>
         <Image src={session.user.image!} alt="Avatar" width={35} height={35} className="rounded-full border border-gray-700" />
-        {session.user.name}
+        <span className="hidden sm:inline">{session.user.name}</span>
       </div>
       {menuOpen && (
-        <div className="absolute top-[110%] left-0 rounded-xl bg-gray-300 dark:bg-gray-800 w-full p-2">
+        <div className="absolute top-[110%] right-0 rounded-xl bg-gray-300 dark:bg-gray-800 min-w-full p-2">
           <div
             className={optionStyles + " hover:bg-gray-200! dark:hover:bg-gray-900! py-2 px-4"}
             onClick={() => window.open("https://github.com/tonymac129/relog/issues", "_blank")}
@@ -44,7 +49,7 @@ function NavUser({ session }: { session: Session }) {
           </div>
           <div
             className={optionStyles + " hover:bg-gray-200! dark:hover:bg-gray-900! py-2 px-4 text-red-400"}
-            onClick={() => signOut()}
+            onClick={handleLogout}
           >
             Log out
           </div>

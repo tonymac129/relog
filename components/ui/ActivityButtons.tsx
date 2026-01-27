@@ -82,8 +82,8 @@ function ActivityButtons({ activity, days, setLogs }: ActivityButtonsProps) {
       <FaTrash size={20} title="Delete activity" className={activityIconStyles} onClick={() => handleDelete()} />
       {editModalOpen && (
         <Modal close={() => setEditModalOpen(false)}>
-          <form className="flex flex-col gap-y-5" onSubmit={(e) => handleEdit(e)}>
-            <h2 className="text-center text-black dark:text-white font-bold text-2xl">Edit Activity</h2>
+          <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleEdit(e)}>
+            <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Edit Activity</h2>
             <input
               type="text"
               placeholder="Title"

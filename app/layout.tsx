@@ -14,7 +14,24 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Home | Relog",
-  description: "Relog is a simple full-stack daily acitivity log tracker that makes you feel productive everyday.",
+  description:
+    "Relog is the best daily activity tracker where you can keep track of what you did each day with custom activities! You can browse and manage these activities effectively with powerful data control features. The app supports both online data syncing and local data stroage.",
+  authors: [{ name: "TonyMac129", url: "https://tonymac.net" }],
+  openGraph: {
+    title: "Relog",
+    description:
+      "Relog is the best daily activity tracker where you can keep track of what you did each day with custom activities! You can browse and manage these activities effectively with powerful data control features. The app supports both online data syncing and local data stroage.",
+    url: "https://relog-app.vercel.app",
+    siteName: "Relog",
+    images: [
+      {
+        url: "/logo.png",
+        width: 200,
+        height: 200,
+      },
+    ],
+    type: "website",
+  },
 };
 
 export default function RootLayout({

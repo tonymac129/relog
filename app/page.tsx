@@ -128,63 +128,74 @@ export default function Page() {
   }
 
   return (
-    <div className="w-full px-70 flex justify-center relative">
-      {guestMode || session?.user ? (
-        <div className="w-[65%]  flex flex-col items-center">
-          <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
-          <Logs displayed={displayedLogs} days={logs} setLogs={setLogs} />
-          {logModalOpen && (
-            <Modal close={() => setLogModalOpen(false)}>
-              <form className="flex flex-col gap-y-5" onSubmit={(e) => handleLog(e)}>
-                <h2 className="text-center text-black dark:text-white font-bold text-2xl">Log Activity</h2>
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={newActivity.title}
-                  onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
-                  className={inputStyles}
-                  ref={titleInputRef}
-                />
-                <input
-                  type="date"
-                  value={
-                    new Date(newActivity.date.getTime() - newActivity.date.getTimezoneOffset() * 60000)
-                      .toISOString()
-                      .split("T")[0]
-                  }
-                  onChange={(e) => {
-                    const outputDate = new Date(e.target.value);
-                    outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
-                    setNewActivity({ ...newActivity, date: outputDate });
-                  }}
-                  className={inputStyles}
-                  tabIndex={-1}
-                />
-                <input
-                  type="text"
-                  placeholder="Description"
-                  value={newActivity.description}
-                  onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
-                  className={inputStyles}
-                />
-                <Button primary={true} submit={true}>
-                  Add activity
-                </Button>
-              </form>
-            </Modal>
-          )}
-          {/*TODO: add animation for modal*/}
-        </div>
-      ) : loading ? (
-        <div className="py-10 text-lg">Loading...</div>
-      ) : (
-        <div className="flex gap-x-5 justify-center py-10">
-          <SignInBtn />
-          <Button onclick={handleGuest}>
-            <FiUser size={25} /> Guest mode
-          </Button>
-        </div>
-      )}
+    <div className="flex justify-center">
+      <div className="px-5 md:px-20 max-w-300 flex-1 flex justify-center relative">
+        {guestMode || session?.user ? (
+          <div className="w-full lg:w-[75%] flex flex-col items-center">
+            <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
+            <Logs displayed={displayedLogs} days={logs} setLogs={setLogs} />
+            {logModalOpen && (
+              <Modal close={() => setLogModalOpen(false)}>
+                <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleLog(e)}>
+                  <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Log Activity</h2>
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    value={newActivity.title}
+                    onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
+                    className={inputStyles}
+                    ref={titleInputRef}
+                  />
+                  <input
+                    type="date"
+                    value={
+                      new Date(newActivity.date.getTime() - newActivity.date.getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                    onChange={(e) => {
+                      const outputDate = new Date(e.target.value);
+                      outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
+                      setNewActivity({ ...newActivity, date: outputDate });
+                    }}
+                    className={inputStyles}
+                    tabIndex={-1}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={newActivity.description}
+                    onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
+                    className={inputStyles}
+                  />
+                  <Button primary={true} submit={true}>
+                    Add activity
+                  </Button>
+                </form>
+              </Modal>
+            )}
+            {/*TODO: add animation for modal*/}
+          </div>
+        ) : loading ? (
+          <div className="py-10 text-lg">Loading...</div>
+        ) : (
+          <div className="py-10 flex flex-col items-center gap-y-10 w-full">
+            <h1 className="text-4xl text-black dark:text-white text-center font-bold">Welcome to Relog!</h1>
+            <div className="flex gap-x-5 justify-center">
+              <SignInBtn />
+              <Button onclick={handleGuest}>
+                <FiUser size={25} /> Guest mode
+              </Button>
+            </div>
+            <p className="text-gray-700 dark:text-gray-300 w-full sm:w-[75%]">
+              Relog is the best daily activity tracker where you can keep track of what you did each day with custom activities!
+              You can browse and manage these activities effectively using features such as searching, filtering, starring,
+              editing, and deleting, as well as exporting and importing user data! The app supports both online data syncing with
+              OAuth providers and guest mode with local data stroage.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

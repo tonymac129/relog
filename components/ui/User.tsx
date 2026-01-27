@@ -7,7 +7,7 @@ async function User() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return <SignInBtn />;
+    return <SignInBtn nav={true} />;
   } else {
     return <NavUser session={session} />;
   }
