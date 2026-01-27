@@ -58,14 +58,16 @@ function SettingsModal({ close, deleteUserAccount }: SettingsModalProps) {
     URL.revokeObjectURL(url);
   }
 
-  function handleImport(e: ChangeEvent) {
-    const file = e.target.files[0];
+  function handleImport(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = (e: Event) => {
+    reader.onload = (e: ProgressEvent<FileReader>) => {
       try {
-        const importedData = JSON.parse(e.target?.result);
+        const result = e.target?.result;
+        if (typeof result !== "string") return;
+        const importedData = JSON.parse(result);
         if (Array.isArray(importedData)) {
           setLogs(importedData);
           if (typeof window !== "undefined" && !session && !sessionStorage.getItem("relog-guest")) {

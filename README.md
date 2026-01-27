@@ -7,6 +7,8 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-black?style=for-the-badge&logo=vercel)
 
+![Relog demo image](/public/demo.png)
+
 Relog is a simple full-stack daily activity log tracker to make you feel productive every day.
 
 ## What is Relog?
@@ -26,14 +28,20 @@ To host Relog on your machine for local development or other purposes, simply fo
    git clone https://github.com/tonymac129/relog.git
    ```
 2. Open it with your favorite code editor or through the terminal
-3. Create the file `.env.local` at the root folder and initialize the following variables:
+3. Make sure you have your own Google and GitHub OAuth services properly configured for accounts to work
+4. Create the file `.env.local` at the root folder and initialize the following variables:
    ```
    MONGO_URI=your_mongo_uri
    NEXTAUTH_URL=http://localhost:3000
    NEXTAUTH_SECRET=your_nextauth_secret
+   GOOGLE_CLIENT_ID=your_google_id
+   GOOGLE_CLIENT_SECRET=your_google_secret
+   GITHUB_CLIENT_ID=your_github_id
+   GITHUB_CLIENT_SECRET=your_github_secret
+   NODE_ENV=development
    ```
-4. If you don't have a MongoDB cluster/connection string, only guest mode will be available (otherwise the app will crash because of obvious reasons)
-5. Open the terminal and run the commands
+5. If you don't have a MongoDB cluster/connection string, only guest mode will be available (otherwise the app will crash because of obvious reasons)
+6. Open the terminal and run the commands
 
    ```bash
    npm install
