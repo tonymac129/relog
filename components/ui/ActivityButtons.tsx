@@ -2,9 +2,10 @@
 
 import type { ActivityType, DayType } from "@/types/Logs";
 import { FaEdit, FaTrash, FaStar, FaRegStar } from "react-icons/fa";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState, useEffect } from "react";
 import Modal from "./Modal";
 import Button from "./Button";
+import { AnimatePresence } from "framer-motion";
 
 const activityIconStyles = "cursor-pointer hover:scale-110 hover:-translate-y-0.5 transition-transform!";
 const inputStyles = "rounded bg-gray-300 dark:bg-gray-900 outline-none py-2 px-4 text-lg";
@@ -19,6 +20,11 @@ function ActivityButtons({ activity, days, setLogs }: ActivityButtonsProps) {
   const [editedActivity, setEditedActivity] = useState<ActivityType>(activity);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [starred, setStarred] = useState<boolean>(activity.starred || false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editModalOpen) titleInputRef.current?.focus();
+  }, [editModalOpen]);
 
   function handleStar() {
     const existingDays = [...days];
@@ -80,46 +86,50 @@ function ActivityButtons({ activity, days, setLogs }: ActivityButtonsProps) {
       )}
       <FaEdit size={20} title="Edit activity" className={activityIconStyles} onClick={() => setEditModalOpen(true)} />
       <FaTrash size={20} title="Delete activity" className={activityIconStyles} onClick={() => handleDelete()} />
-      {editModalOpen && (
-        <Modal close={() => setEditModalOpen(false)}>
-          <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleEdit(e)}>
-            <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Edit Activity</h2>
-            <input
-              type="text"
-              placeholder="Title"
-              value={editedActivity.title}
-              onChange={(e) => setEditedActivity({ ...editedActivity, title: e.target.value })}
-              className={inputStyles}
-              //TODO: add automatic title input focus when modal opens ref
-            />
-            <input
-              type="date"
-              value={
-                new Date(new Date(editedActivity.date).getTime() - new Date(editedActivity.date).getTimezoneOffset() * 60000)
-                  .toISOString() //TODO timezone offset doesnt work properly cuz it gets absolute value difference
-                  .split("T")[0]
-              }
-              onChange={(e) => {
-                const outputDate = new Date(e.target.value);
-                outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
-                setEditedActivity({ ...editedActivity, date: outputDate });
-              }}
-              className={inputStyles}
-              tabIndex={-1}
-            />
-            <input
-              type="text"
-              placeholder="Description"
-              value={editedActivity.description}
-              onChange={(e) => setEditedActivity({ ...editedActivity, description: e.target.value })}
-              className={inputStyles}
-            />
-            <Button primary={true} submit={true}>
-              Edit activity
-            </Button>
-          </form>
-        </Modal>
-      )}
+      <AnimatePresence>
+        {editModalOpen && (
+          <Modal close={() => setEditModalOpen(false)}>
+            <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleEdit(e)}>
+              <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Edit Activity</h2>
+              <input
+                type="text"
+                placeholder="Title"
+                value={editedActivity.title}
+                onChange={(e) => setEditedActivity({ ...editedActivity, title: e.target.value })}
+                className={inputStyles}
+                ref={titleInputRef}
+              />
+              <input
+                type="date"
+                value={
+                  new Date(new Date(editedActivity.date).getTime() - new Date(editedActivity.date).getTimezoneOffset() * 60000)
+                    .toISOString() //TODO timezone offset doesnt work properly cuz it gets absolute value difference
+                    .split("T")[0]
+                }
+                onChange={(e) => {
+                  const outputDate = new Date(e.target.value);
+                  outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
+                  setEditedActivity({ ...editedActivity, date: outputDate });
+                }}
+                className={inputStyles}
+                tabIndex={-1}
+              />
+              <textarea
+                placeholder="Description"
+                value={editedActivity.description}
+                onChange={(e) => setEditedActivity({ ...editedActivity, description: e.target.value })}
+                className={inputStyles + " resize-none h-30"}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleEdit(e);
+                }}
+              ></textarea>
+              <Button primary={true} submit={true}>
+                Edit activity
+              </Button>
+            </form>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

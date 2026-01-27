@@ -7,6 +7,7 @@ import { useState } from "react";
 import SettingsModal from "../ui/SettingsModal";
 import Link from "next/link";
 import Image from "next/image";
+import { AnimatePresence } from "framer-motion";
 
 const navBtnStyles =
   "cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800 rounded-full flex items-center px-3 py-2 gap-x-3 font-bold";
@@ -33,8 +34,8 @@ function Nav({ children, deleteUserAccount }: NavProps) {
           <a href="https://github.com/tonymac129/relog" target="_blank" className={navBtnStyles}>
             <FiGithub size={20} /> <span className="hidden sm:inline">GitHub</span>
           </a>
-          <div className={navBtnStyles} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-            {theme === "light" ? <MdDarkMode size={20} /> : <MdLightMode size={20} />}{" "}
+          <div className={navBtnStyles} onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+            {theme === "light" ? <MdDarkMode size={20} /> : <MdLightMode size={20} />}
             <span className="hidden sm:inline">Theme</span>
           </div>
           <div className={navBtnStyles} onClick={() => setSettingsModalOpen(true)}>
@@ -42,7 +43,9 @@ function Nav({ children, deleteUserAccount }: NavProps) {
           </div>
           {children}
         </div>
-        {settingsModalOpen && <SettingsModal close={() => setSettingsModalOpen(false)} deleteUserAccount={deleteUserAccount} />}
+        <AnimatePresence>
+          {settingsModalOpen && <SettingsModal close={() => setSettingsModalOpen(false)} deleteUserAccount={deleteUserAccount} />}
+        </AnimatePresence>
       </nav>
     </div>
   );

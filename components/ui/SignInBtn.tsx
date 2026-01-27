@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FiLogIn } from "react-icons/fi";
 import SignInModal from "./SignInModal";
+import { AnimatePresence } from "framer-motion";
 
 function SignInBtn({ nav }: { nav?: boolean }) {
   const [signInModalOpen, setSignInModalOpen] = useState<boolean>(false);
@@ -15,7 +16,7 @@ function SignInBtn({ nav }: { nav?: boolean }) {
       >
         <FiLogIn size={20} /> <span className={nav ? "hidden sm:inline" : ""}>Sign in</span>
       </div>
-      {signInModalOpen && <SignInModal close={() => setSignInModalOpen(false)} />}
+      <AnimatePresence>{signInModalOpen && <SignInModal close={() => setSignInModalOpen(false)} />}</AnimatePresence>
     </>
   );
 }

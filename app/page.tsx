@@ -5,6 +5,7 @@ import { FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, FormEvent, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { getUserLogs, updateUserLogs } from "./actions";
+import { AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 import Manage from "./Manage";
 import Logs from "./Logs";
@@ -74,7 +75,6 @@ export default function Page() {
 
   useEffect(() => {
     if (logModalOpen) {
-      document.body.classList.add("modal-open");
       titleInputRef.current?.focus();
       setNewActivity({
         id: crypto.randomUUID(),
@@ -82,8 +82,6 @@ export default function Page() {
         description: "",
         date: new Date(),
       });
-    } else {
-      document.body.classList.remove("modal-open");
     }
   }, [logModalOpen]);
 
@@ -134,47 +132,51 @@ export default function Page() {
           <div className="w-full lg:w-[75%] flex flex-col items-center">
             <Manage search={search} setSearch={setSearch} setFiltering={setFiltering} handleAddLog={handleAddLog} />
             <Logs displayed={displayedLogs} days={logs} setLogs={setLogs} />
-            {logModalOpen && (
-              <Modal close={() => setLogModalOpen(false)}>
-                <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleLog(e)}>
-                  <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Log Activity</h2>
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={newActivity.title}
-                    onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
-                    className={inputStyles}
-                    ref={titleInputRef}
-                  />
-                  <input
-                    type="date"
-                    value={
-                      new Date(newActivity.date.getTime() - newActivity.date.getTimezoneOffset() * 60000)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    onChange={(e) => {
-                      const outputDate = new Date(e.target.value);
-                      outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
-                      setNewActivity({ ...newActivity, date: outputDate });
-                    }}
-                    className={inputStyles}
-                    tabIndex={-1}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={newActivity.description}
-                    onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
-                    className={inputStyles}
-                  />
-                  <Button primary={true} submit={true}>
-                    Add activity
-                  </Button>
-                </form>
-              </Modal>
-            )}
-            {/*TODO: add animation for modal*/}
+            <AnimatePresence>
+              {logModalOpen && (
+                <Modal close={() => setLogModalOpen(false)}>
+                  <form className="flex flex-col gap-y-2 sm:gap-y-5" onSubmit={(e) => handleLog(e)}>
+                    <h2 className="text-center text-black dark:text-white font-bold text-lg sm:text-2xl">Log Activity</h2>
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={newActivity.title}
+                      onChange={(e) => setNewActivity({ ...newActivity, title: e.target.value })}
+                      className={inputStyles}
+                      ref={titleInputRef}
+                    />
+                    <input
+                      type="date"
+                      value={
+                        new Date(newActivity.date.getTime() - newActivity.date.getTimezoneOffset() * 60000)
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                      onChange={(e) => {
+                        const outputDate = new Date(e.target.value);
+                        outputDate.setTime(outputDate.getTime() + outputDate.getTimezoneOffset() * 60000);
+                        setNewActivity({ ...newActivity, date: outputDate });
+                      }}
+                      className={inputStyles}
+                      tabIndex={-1}
+                    />
+                    <textarea
+                      placeholder="Description"
+                      value={newActivity.description}
+                      onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
+                      className={inputStyles + " resize-none h-30"}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleLog(e);
+                      }}
+                    ></textarea>
+                    <Button primary={true} submit={true}>
+                      Add activity
+                    </Button>
+                  </form>
+                </Modal>
+              )}
+            </AnimatePresence>
+            {/*TODO: add tag/type/category selector and corresponding filters*/}
           </div>
         ) : loading ? (
           <div className="py-10 text-lg">Loading...</div>
